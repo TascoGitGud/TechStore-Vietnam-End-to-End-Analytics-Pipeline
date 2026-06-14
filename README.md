@@ -296,9 +296,9 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 
 ![Power BI Dashboard Demo](Images/PBIdashboarddemo.png)
 
-*Figure 4: A quick demo dashboard pulling from the three views 
+*Figure 4: A quick demo dashboard pulling from the three views, charts and cards to verify that data flows through correctly from BigQuery to Power BI.*
 
-> charts and cards to verify that data flows through correctly from BigQuery to Power BI. This is not a full analytical dashboard; it is a functional check to confirm the data pipeline end-to-end.*
+>  This is not a full analytical dashboard; it is a functional check to confirm the data pipeline end-to-end.
 
 ---
 

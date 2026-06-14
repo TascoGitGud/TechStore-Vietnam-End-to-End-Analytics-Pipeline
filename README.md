@@ -302,7 +302,7 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 ## 🗂️ Project Structure
 
 ```
-end_to_end_project/
+Bach Minh Nam - ETL Pipeline/
 ├── config/
 │   └── config.txt                    # Configuration template
 ├── 

@@ -381,10 +381,7 @@ pip install -r requirement.txt
 
 **3. Set up credentials**
 
-Copy the example env file and fill in your GCP credential file paths:
-```bash
-cp .env.example .env
-```
+Fill in your GCP credential file paths:
 
 ```env
 GOOGLE_APPLICATION_CREDENTIALS=path/to/gcs_service_account.json
@@ -398,7 +395,7 @@ GOOGLE_APPLICATION_CREDENTIALS_BIGQUERY=path/to/bigquery_service_account.json
 In `main.py`, update these two lines:
 ```python
 BUCKET_NAME = 'your-gcs-bucket-name'
-DATASET_ID = 'techstore_analytics'
+DATASET_ID = 'your-dataset'
 ```
 
 **6. Run the pipeline**

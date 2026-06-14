@@ -16,7 +16,7 @@
 
 1. [📌 Background & Overview](#-background--overview)
 2. [📂 Data Sources](#-data-sources)
-3. [🏛️ Architecture & Design](#-architecture--design)
+3. [🏛 Architecture & Design](#-architecture--design)
 4. [⚒️ Main Process](#-main-process)
 5. [🗄️ Data Model (Star Schema)](#-data-model-star-schema)
 6. [📊 Results - BigQuery Output](#-results--bigquery-output)
@@ -125,7 +125,7 @@ Each source has its own data format. Below are three examples:
 
 ---
 
-## 🏛️ Architecture & Design
+## 🏛 Architecture & Design
 
 ### Pipeline Architecture
 

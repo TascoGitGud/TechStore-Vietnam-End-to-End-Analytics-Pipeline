@@ -18,7 +18,7 @@ Partition: `created_at`
 | city | STRING | City |
 | country | STRING | Country |
 | created_at | TIMESTAMP | Account creation date |
-| customer_segment | STRING | Customer segment (VIP, Regular, New, ...) |
+| customer_segment | STRING | Customer segment |
 | lifetime_value_vnd | NUMERIC | Customer lifetime value in VND |
 | total_orders | INT64 | Total number of orders |
 | first_order_date | TIMESTAMP | Date of first order |
@@ -50,7 +50,7 @@ Partition: `created_at`
 | location_id | INT64 | Location ID (PK) |
 | location_code | STRING | Location code |
 | location_name | STRING | Location name |
-| location_type | STRING | Location type (store, warehouse, ...) |
+| location_type | STRING | Location type |
 | city | STRING | City |
 | address | STRING | Address |
 | phone | STRING | Phone number |
@@ -91,9 +91,9 @@ Partition: `order_date_key` · Cluster: `customer_id`, `channel`
 | customer_id | INT64 | FK → dim_customers.customer_id |
 | order_date | TIMESTAMP | Order timestamp |
 | order_date_key | DATE/INT64 | FK → dim_date.date_key |
-| channel | STRING | Sales channel (online, store, app, ...) |
+| channel | STRING | Sales channel |
 | source | STRING | Order source |
-| status | STRING | Order status (pending, completed, cancelled, refunded, ...) |
+| status | STRING | Order status |
 | payment_status | STRING | Payment status of the order |
 | total_vnd | NUMERIC | Order total in VND |
 | total_usd | NUMERIC | Order total in USD |
@@ -124,10 +124,10 @@ Partition: `payment_date_key` · Cluster: `customer_id`, `payment_gateway`
 | transaction_id | STRING | FK → fact_orders.transaction_id |
 | order_id | STRING | FK → fact_orders.order_id |
 | customer_id | INT64 | FK → dim_customers.customer_id |
-| payment_gateway | STRING | Payment gateway (Momo, VNPay, Stripe, ...) |
-| payment_method | STRING | Payment method (card, bank_transfer, cod, ...) |
+| payment_gateway | STRING | Payment gateway |
+| payment_method | STRING | Payment method  |
 | amount_vnd | NUMERIC | Transaction amount in VND |
-| payment_status | STRING | Payment status (success, failed, refunded, pending) |
+| payment_status | STRING | Payment status |
 | payment_date | TIMESTAMP | Transaction timestamp |
 | payment_date_key | DATE/INT64 | FK → dim_date.date_key |
 
@@ -142,15 +142,15 @@ Partition: `event_date_key` · Cluster: `customer_id`, `session_id`, `event_type
 | event_id | STRING | Original event ID |
 | session_id | STRING | Session ID |
 | customer_id | INT64 | FK → dim_customers.customer_id |
-| event_type | STRING | Event type: add_to_cart, remove_from_cart, view_item, purchase, etc. |
+| event_type | STRING | Event type: add_to_cart, purchase, etc. |
 | event_timestamp | TIMESTAMP | Event timestamp |
 | event_date_key | DATE/INT64 | FK → dim_date.date_key |
 | product_id | INT64 | FK → dim_products.product_id |
 | source | STRING | Traffic source |
-| device | STRING | Device type (mobile, desktop, tablet) |
+| device | STRING | Device type |
 | browser | STRING | Browser |
-| utm_source | STRING | UTM source (marketing tracking) |
-| utm_campaign | STRING | UTM campaign (marketing tracking) |
+| utm_source | STRING | UTM source |
+| utm_campaign | STRING | UTM campaign |
 
 ---
 
@@ -164,7 +164,7 @@ Partition: `transaction_date_key`
 | account_id | STRING | Bank account ID |
 | transaction_type | STRING | inflow or outflow |
 | amount_vnd | NUMERIC | Amount in VND |
-| status | STRING | Status (completed, pending, failed) |
+| status | STRING | Status |
 | transaction_date | TIMESTAMP | Transaction timestamp |
 | transaction_date_key | DATE/INT64 | FK → dim_date.date_key |
 
@@ -180,14 +180,14 @@ Partition: `transaction_date_key`
 | touchpoint_seq | INT64 | Sequence number of the touchpoint |
 | event_type | STRING | Event type or "purchase" |
 | event_timestamp | TIMESTAMP | Event timestamp |
-| session_id | STRING | Session ID (NULL for purchase rows) |
-| product_id | INT64 | Related product (NULL for purchase rows) |
+| session_id | STRING | Session ID |
+| product_id | INT64 | Related product |
 | source | STRING | Traffic source |
 | device | STRING | Device type |
 | utm_source | STRING | UTM source |
 | utm_campaign | STRING | UTM campaign |
-| order_id | STRING | Order ID (purchase rows only) |
-| order_total_vnd | NUMERIC | Order total (purchase rows only) |
+| order_id | STRING | Order ID |
+| order_total_vnd | NUMERIC | Order total |
 | first_touchpoint_at | TIMESTAMP | Customer's first touchpoint |
 | first_purchase_at | TIMESTAMP | Customer's first purchase timestamp |
 | hours_to_first_purchase | INT64 | Hours from first touchpoint to first purchase |

@@ -39,11 +39,11 @@ This project builds a **Python ETL pipeline** that pulls data from all sources, 
 
 ✔️ Connects **8 data sources** (3 sales channels + 4 payment sources + cart tracking) into one place.
 
-✔️ Organises data into a **Star Schema** with 3 dimension tables and 5 fact tables, ready for analysis.
+✔️ Organises data into a **Star Schema** with 4 active dimension tables and 5 fact tables, ready for analysis.
 
 ✔️ Runs **automatic data quality checks** at every step - catching nulls, duplicates, bad dates, and outliers before anything gets loaded.
 
-✔️ After each run, automatically re-calculates **customer RFM segments** (Champions, Loyal, At Risk, Lost, etc.) and lifetime value using a BigQuery SQL query.
+✔️ After each run, automatically re-calculates **customer RFM segments** and lifetime value using a BigQuery SQL query.
 
 ✔️ Creates **3 ready-to-use views** for common business questions: customer journey, daily cashflow, and payment status.
 
@@ -191,9 +191,9 @@ After all tables are loaded, the pipeline runs a BigQuery `MERGE` statement that
 
 1. Pulls order history from `fact_orders` (paid + completed orders only) and calculates each customer's total spend, order count, first order date, and last order date
 2. Scores each customer on **Recency, Frequency, and Monetary** value using `NTILE(5)` - giving each axis a score from 1 to 5
-3. Combines the three scores into a 3-digit cell (e.g. `555`, `312`) and maps it to a segment name: `Champions`, `Loyal`, `Growing / Potential`, `Needs Attention`, `At Risk`, `Lost / Inactive`, and others
+3. Combines the three scores into a 3-digit cell (e.g. `555`, `312`) and maps it to a segment name: At Risk, Growing / Potential, Lost / Inactive, Needs Attention, No Purchase, and others
 4. Customers with no purchase history are labelled `No Purchase` - their `total_orders = 0` and `first/last_order_date` remain `null`
-5. Updates `dim_customer` in place - existing rows are overwritten with the new values (no history kept)
+5. Updates `dim_customer` in place - existing rows are overwritten with the new values 
 
 ### Step 5: Orchestration & Error Handling
 
@@ -211,7 +211,7 @@ Each table has its own `try/except` block - if one source fails (e.g. a bad PayP
 
 ![Star Schema Data Model](Images/Star_Schema_Data_Model.png)
 
-*Figure 2: Star Schema - 3 Dimension Tables + 5 Fact Tables in Google BigQuery*
+*Figure 2: Star Schema - 4 Active Dimension Tables + 5 Fact Tables in Google BigQuery 
 
 Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
 
@@ -224,7 +224,7 @@ Dimension tables describe the "who", "what", "where", and "when". Fact tables re
 | `dim_customer` | Shopify | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, first/last order date. Updated automatically after each pipeline run. |
 | `dim_product` | Shopify | - | `product_id` | Product name, SKU, category, brand, price in VND and USD, stock quantity, active flag. |
 | `dim_location` | Sapo POS | - | `location_id` | Store name, code, city, address, phone. `location_type` = `Offline Store`. |
-| `dim_date` | - | - | `date_key` | Date attributes: year, quarter, month, week, day name, weekend flag, holiday flag, fiscal period. **Designed but not yet activated** - `transform_dim_date()` is commented out pending a holiday data source. |
+| `dim_date` | - | - | `date_key` | Date attributes: year, quarter, month, week, day name, weekend flag, holiday flag, fiscal period. |
 
 > `dim_staff` was part of the original scope but **not built** - Sapo POS raw data does not include staff information.
 
@@ -246,7 +246,7 @@ Three views sit on top of the fact tables and are ready to query directly from P
 |---|---|---|
 | `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase? Shows full event sequence, session info, and `hours_to_first_purchase`. |
 | `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day? Reconciles sales revenue, payments received, and bank transactions into one daily row with `net_cashflow_vnd`. |
-| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as Paid / Pending / Overdue / Partially Paid / Cancelled / Unknown, with `payment_delay_hours` and `outstanding_amount_vnd`. |
+| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as Paid / Pending  / Partially Paid / Refunded/etc.. , with `payment_delay_hours` and `outstanding_amount_vnd`. |
 
 ---
 
@@ -256,9 +256,9 @@ The screenshots below show real query results from BigQuery after the pipeline h
 
 ### dim_customer - RFM Segments Auto-Updated
 
-![dim_customer](Images/dim_customer.png)
+![Dim_customer](Images/dim_customer.png)
 
-`dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment.
+`dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment - including `No Purchase` for customers with no order history (`total_orders = 0` and `first_order_date` / `last_order_date` left as `null`).
 
 ### vw_cashflow_daily - Daily Revenue and Cashflow
 
@@ -286,13 +286,13 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 
 ### Data Model View in Power BI
 
-![Power BI Model View](Images/PBI_model_view.png)
+![Power BI Model View](Images/PBImodelview.png)
 
-*Figure 3: The three views loaded into Power BI's model view, showing relationships between tables.*
+*Figure 3: The three views loaded into Power BI's model view.*
 
 ### Sample Dashboard (Demo)
 
-![Power BI Dashboard Demo](Images/PBI_dashboard_demo.png)
+![Power BI Dashboard Demo](Images/PBIdashboarddemo.png)
 
 *Figure 4: A quick demo dashboard pulling from the three views - charts and cards to verify that data flows through correctly from BigQuery to Power BI. This is not a full analytical dashboard; it is a functional check to confirm the data pipeline end-to-end.*
 
@@ -353,7 +353,7 @@ end_to_end_project/
 
 ✔️ **Daily cashflow visibility** - Finance can check whether money was actually received each day with a single query against `vw_cashflow_daily`.
 
-✔️ **Always up-to-date customer segments** - Marketing gets fresh RFM segments (Champions, Loyals, At-Risk, etc.) automatically after every pipeline run, without a separate tool or manual step.
+✔️ **Always up-to-date customer segments** - Marketing gets fresh RFM segments automatically after every pipeline run, without a separate tool or manual step.
 
 ✔️ **Easy to extend** - adding a new data source only means writing a new extractor class. Everything else (cleaning logic, loader, orchestrator) stays the same.
 

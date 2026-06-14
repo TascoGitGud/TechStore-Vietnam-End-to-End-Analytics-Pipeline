@@ -70,7 +70,7 @@ Partition: `created_at`
 | week | INT64 | Week number of the year |
 | day_of_month | INT64 | Day of the month |
 | day_of_week | INT64 | Day of the week (1-7) |
-| day_name | STRING | Day name (Monday, Tuesday, ...) |
+| day_name | STRING | Day name |
 | is_weekend | BOOL | Whether the day is a weekend |
 | is_holiday | BOOL | Whether the day is a holiday |
 | fiscal_year | INT64 | Fiscal year |

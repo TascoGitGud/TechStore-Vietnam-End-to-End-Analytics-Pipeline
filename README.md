@@ -1,170 +1,431 @@
-# UNIGAP - PORTFOLIO BUILDING MODULE - SQL/ PYTHON PROJECT
+# 🏗️ Building an Omnichannel Retail Data Pipeline
+### End-to-End ETL Pipeline | Python · Google Cloud Storage · BigQuery | Star Schema Data Warehouse
 
-🔥Use this template as an outline for your SQL/ Python Github projects - which is task by task type of projects. 
-Make a copy of this readme file and tailor it your own. Happy portfolio-ing and start applying aggressively :"))
+> **Note:** This repository is for **technical readers** — data engineers, analytics engineers, and technical leads.
 
-Updated: Nov'25
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white)
+![Google BigQuery](https://img.shields.io/badge/Google_BigQuery-4285F4?style=flat-square&logo=googlebigquery&logoColor=white)
+![Google Cloud Storage](https://img.shields.io/badge/Google_Cloud_Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white)
 
----
-![KPMG Transaction Analysis](https://github.com/Dorothy-Ho-Vy/Sample_SQL_Python_template/blob/4dee6ff56077b90b1aea82e8517136f7185a77a3/Blue%20White%20Modern%20Payment%20Gateway%20Service%20Twitter%20Post.png.crdownload)
-
-👉🏻Change Icon emoji 🔥🔍📘🚩 to your likings by clicking "Start" + "."
-
-# 📊 Your Project Name [ Business question + Domain + Tools ]  
-
- _Example:_
- _Analyze Customer segmentation of Sprocket Central - a medium size bikes accessories organization | Python_
- 
-_+ Business question: The core problem that this project solves ->  Customer segmentation_
-
-_+ Domain: Domain/ Industry that this projects focus on --> a medium size bikes accessories organization tức công ty sản xuất và thương mại_
-
-**_📌You need to show that your projects are applicable to real business use cases, for a particular industry, not just "learning projects"_**
-  
-Author: [Your Name]  
-Date: YYYY-MM-DD  
-Tools Used: SQL/ Python  
+![Banner](documents/images/Banner.jpg)
 
 ---
 
-## 📑 Table of Contents  
-1. [📌 Background & Overview](#-background--overview)  
-2. [📂 Dataset Description & Data Structure](#-dataset-description--data-structure)
-4. [🔎 Final Conclusion & Recommendations](#-final-conclusion--recommendations)
+## 📑 Table of Contents
+
+1. [📌 Background & Overview](#-background--overview)
+2. [📂 Data Sources](#-data-sources)
+3. [🏛️ Architecture & Design](#-architecture--design)
+4. [⚒️ Main Process](#-main-process)
+5. [🗄️ Data Model (Star Schema)](#-data-model-star-schema)
+6. [📊 Results — BigQuery Output](#-results--bigquery-output)
+7. [📈 Power BI Demo](#-power-bi-demo)
+8. [🗂️ Project Structure](#-project-structure)
+9. [🔎 Conclusion & Business Impact](#-conclusion--business-impact)
+10. [⚙️ Setup Instructions](#-setup-instructions)
 
 ---
 
-## 📌 Background & Overview  
+## 📌 Background & Overview
 
-### Objective:
-### 📖 What is this project about? What Business Question will it solve?
+### Business Context
 
-Clearly outline what this project does, what business questions the project will solve. 
+**TechStore Vietnam** is a technology retail company that sells across multiple channels — an online Shopify store, Sapo POS at physical locations, and other online order platforms. Customers pay through MoMo, ZaloPay, PayPal, and Mercury Bank.
 
-- Provide a brief introduction - Write in bullet point format
-- Point out the main business question
+Before this project, data from each channel lived in a separate system. There was no single place to see the full picture — how much was sold, whether payments were collected, or how customers behaved across channels.
 
+### What This Project Does
 
- _Example:_
-  This project uses Python to analyze transaction data from KPMG to:
+This project builds a **Python ETL pipeline** that pulls data from all sources, cleans and standardises it, and loads it into a **Google BigQuery data warehouse** — so every team works from the same data.
 
-✔️ Identify the behavior in customer's first transaction.  
-✔️ Provide actionable insights to increase retention rate   
- 
+✔️ Connects **8 data sources** (3 sales channels + 4 payment sources + cart tracking) into one place.
 
+✔️ Organises data into a **Star Schema** with 3 dimension tables and 5 fact tables, ready for analysis.
 
-### 👤 Who is this project for?  
+✔️ Runs **automatic data quality checks** at every step — catching nulls, duplicates, bad dates, and outliers before anything gets loaded.
 
-Mention who might benefit from this project 
+✔️ After each run, automatically re-calculates **customer RFM segments** (Champions, Loyal, At Risk, Lost, etc.) and lifetime value using a BigQuery SQL query.
 
- _Example:_
+✔️ Creates **3 ready-to-use views** for common business questions: customer journey, daily cashflow, and payment status.
 
-✔️ Data analysts & business analysts  
-✔️ Decision-makers & stakeholders  
+### Who Is This Project For?
 
+✔️ Data engineers looking at pipeline design patterns with GCP
 
+✔️ Analytics engineers who want to see how multi-source ETL is structured in Python
+
+✔️ Business teams who need a reliable, unified view of sales, payments, and customer behaviour
 
 ---
 
-## 📂 Dataset Description & Data Structure  
+## 📂 Data Sources
 
-### 📌 Data Source  
-- Source: (Mention where the dataset is obtained from—Kaggle, company database, government sources, etc.)  
-- Size: (Mention the number of rows & columns)  
-- Format: (.csv, .sql, .xlsx, etc.)  
+All raw data is stored in **Google Cloud Storage (GCS)** as `.json.gz` files, one folder per source. The pipeline reads from GCS directly — no extra staging step needed.
 
-### 📊 Data Structure & Relationships  
+| Source | Folder | Data Volume | Format |
+|---|---|---|---|
+| Shopify (Online Store) | `shopify/` | 2M customers · 200K orders · 1K products | `.json.gz` |
+| Sapo POS (Offline Stores) | `sapo/` | 1M orders · 50 store locations | `.json.gz` |
+| Online Orders (Multi-channel) | `online_orders/` | 50K orders | `.json.gz` |
+| PayPal | `paypal/` | 300 transactions | `.json.gz` |
+| MoMo | `momo/` | 500 transactions | `.json.gz` |
+| ZaloPay | `zalopay/` | 500 transactions | `.json.gz` |
+| Mercury Bank | `mercury/` | 3 accounts · 500 transactions | `.json.gz` |
+| Cart Tracking | `cart_tracking/` | 10,000+ events | `.json.gz` |
 
-#### 1️⃣ Tables Used:  
-Mention how many tables are in the dataset.  Only mention tables that you actually used from the entire dataset. 
+### Sample Raw Data Schemas
 
-#### 2️⃣ Table Schema & Data Snapshot  
+Each source has its own data format. Below are three examples:
 
-Table 1: Products Table  
+**Shopify Orders**
+```json
+{
+  "id": "int",
+  "transaction_id": "string",
+  "customer_id": "int",
+  "order_date": "datetime",
+  "payment_status": "string",
+  "total_vnd": "int",
+  "total_usd": "float",
+  "line_items": "array",
+  "source": "shopify"
+}
+```
 
-👉🏻 Insert a screenshot of table schema 
+**Sapo POS Orders**
+```json
+{
+  "id": "int",
+  "code": "string",
+  "transaction_id": "string",
+  "customer": "object",
+  "line_items": "array",
+  "total_vnd": "int",
+  "status": "string",
+  "source": "sapo_pos"
+}
+```
 
-**_📌If the table is too big, only capture a part of it that contains key metrics you used in the projects or put the table in toggle_**
+**Cart Tracking Events**
+```json
+{
+  "event_id": "string",
+  "event_type": "string",
+  "session_id": "string",
+  "customer_id": "int",
+  "product_id": "int",
+  "timestamp": "datetime",
+  "utm_source": "string",
+  "utm_campaign": "string"
+}
+```
 
- _Example:_
+> For full column details on all tables, see the 📄 [Data Dictionary](documents/data_dictionary.md).
 
-| Column Name | Data Type | Description |  
-|-------------|----------|-------------|  
-| Product_ID  | INT      | Unique identifier for each product |  
-| Name        | TEXT     | Product name |  
-| Category    | TEXT     | Product category |  
-| Price       | FLOAT    | Price per unit |  
+---
 
+## 🏛️ Architecture & Design
 
-Table 2: Sales Transactions  
+### Pipeline Architecture
 
-👉🏻 Insert a screenshot of table schema.
+![Architecture](documents/images/Architecture.png)
 
+*Figure 1: End-to-End Pipeline — GCS → ETL Engine → BigQuery → Power BI*
+
+| Step | What Happens |
+|---|---|
+| **1. Extract** | The pipeline connects to GCS using a Storage service account and reads all `.json.gz` files. |
+| **2. Transform** | Data is cleaned and reshaped in memory using Python and Pandas — no intermediate database needed. |
+| **3. Load** | Cleaned tables are written to BigQuery using a separate BigQuery service account. |
+| **4. Visualise** | Power BI connects directly to BigQuery to display dashboards. |
+
+### Data Layers (Bronze → Silver → Gold)
+
+| Layer | Where | What |
+|---|---|---|
+| **Bronze** | GCS Buckets | Raw files exactly as received from each source. Nothing is changed. |
+| **Silver** | In-memory (Pandas) | Columns renamed, data types fixed, keys generated, missing values filled. Quality checks run here before loading. |
+| **Gold** | Google BigQuery | Clean dimension and fact tables, plus SQL updates for customer segments and derived metrics. |
 
 ---
 
 ## ⚒️ Main Process
 
-1️⃣ Data Cleaning & Preprocessing  
-2️⃣ Exploratory Data Analysis (EDA)  
-3️⃣ SQL/ Python Analysis 
+### Step 1: Extract — Reading files from GCS
 
-👉🏻 First, explain codes' purpose - what they do in 1, 2 short sentences.
+Each data source has its own extractor class that knows where its files live. All extractors share the same base logic (connect to GCS, list files, unzip and read `.json.gz`) through a `BaseExtractor` class — so there's no repeated code.
 
-*_Example_*
+`PaymentExtractor` handles all four payment sources in one class. Mercury Bank is a special case — it returns two separate tables (`accounts` and `transactions`), while the other three return a single flat table each.
 
-## Task 1: Analyze bounce rate...
+### Step 2: Transform — Cleaning and Shaping Data
 
-Bounce rate represents the percentage of website sessions where users visit only one page and leave without interacting further with the site. A high bounce rate can indicate that visitors are not [....]
+All common transformation logic lives in `BaseTransformer`, which both `DimTransformer` and `FactTransformer` inherit from. This includes:
 
-**_📌You need to show your understanding/ thinking process when you do this analysis. In the above exp, I explain the meaning of Bounce Rate in Marketing performance analysis - which demonstrates my understanding about the metric & its role in my projects/ flow of analysis"_**
-**_📌If the task is just simple as "Remove duplication, Replace null value.."--> Summarize all steps related to Transforming & Cleaning data steps in a group & explain shortly at once the reason why you need that transformation_**
+- **`to_date()`** — turns text date columns into proper datetime format; bad values become null instead of errors
+- **`convert_ns_to_us()`** — converts timestamp precision so BigQuery can accept it without errors
+- **`create_date_key()`** — creates an integer date key like `20240315` for linking to the date dimension
+- **`create_surrogate_key()`** — builds a unique ID by combining multiple columns (e.g. `shopify_ORDER123_TXN456`)
+- **`unflatten_list()`** — expands nested product arrays inside orders into individual rows
+- **`data_quality_check()`** — checks for nulls, flags duplicate rows with `is_deleted = 1`, validates date ranges, and detects amount outliers using IQR
+- **`handle_missing_value()`** — fills specific null columns with safe defaults (e.g. guest `customer_id` → `-1`)
 
-👉🏻 Then how your query/ code & Insert screenshots of your result
+**Dimension tables** built by `DimTransformer`:
 
- **_If your result is a very long table with many records, only show top 5/10 and bottom 5/10 rows, or records that relevant to the insights/ observation below_**
+- `dim_customer` — customer profile from Shopify; `customer_segment`, `first_order_date`, `last_order_date` start empty and get filled in later by the SQL step
+- `dim_product` — product catalogue from Shopify; `is_active` flag added
+- `dim_location` — store locations from Sapo POS; `location_type` set to `Offline Store`
 
-*_Example_*
+**Fact tables** built by `FactTransformer`:
 
-### Project Results:
+- `fact_orders` — combines orders from Shopify, Online Orders, and Sapo POS. Each source is cleaned separately, then all three are stacked together using `pd.concat`
+- `fact_order_items` — explodes the `line_items` array inside each order into individual product rows, then stacks all channels together
+- `fact_payments` — standardises payment records from ZaloPay, MoMo, and PayPal. Each gateway uses a different success code — `return_code == 1` for ZaloPay, `resultCode == 0` for MoMo — both are mapped to `SUCCESS`/`FAILED`. **PayPal data was excluded from the final load due to very low data volume**, but the transformer is kept for future use.
+- `fact_cart_events` — maps raw user behaviour events (add to cart, view item, etc.) with UTM tracking fields
+- `fact_bank_transactions` — processes Mercury Bank records; negative amounts (outflows) are allowed and noted
 
-| Period   | Name                | Count Items | Count Orders | Sales        |
-|:---------|:--------------------|------------:|-------------:|-------------:|
-| Apr 2014 | Bib-Shorts          |           4 |            1 |       233.97 |
-| Feb 2014 | Bib-Shorts          |           4 |            2 |       233.97 |
-| Jul 2013 | Bib-Shorts          |           2 |            1 |       116.99 |
-| Jun 2013 | Bib-Shorts          |           2 |            1 |       116.99 |
-| Apr 2014 | Bike Racks          |          45 |           45 |     5,400.00 |
-| Aug 2013 | Bike Racks          |         222 |           63 |    17,387.18 |
-| Dec 2013 | Bike Racks          |         162 |           48 |    12,582.29 |
-| Feb 2014 | Bike Racks          |          27 |           27 |     3,240.00 |
-| Jan 2014 | Bike Racks          |         161 |           53 |    12,840.00 |
-| Jul 2013 | Bike Racks          |         422 |           75 |    29,802.30 |
-| ...      | ...                 |         ... |          ... |          ... |
-| May 2014 | Vests               |         610 |          103 |    23,640.71 |
-| Nov 2013 | Vests               |         315 |           75 |    12,937.24 |
-| Oct 2013 | Vests               |         611 |           93 |    23,255.74 |
-| Sep 2013 | Vests               |         623 |          102 |    24,100.47 |
-| Jul 2013 | Wheels              |           4 |            1 |       698.63 |
-| Jun 2013 | Wheels              |           3 |            1 |       450.91 |
-| Sep 2013 | Wheels              |           1 |            1 |        83.30 |
+### Step 3: Load — Writing to BigQuery
 
-*A summary of the full results. The complete dataset is available in the repository.*
+`BigQueryLoader` handles all writes to BigQuery. It automatically picks the right partition type based on the column:
 
-👉🏻 Finally, explain your observations/ findings from the results 
-  
- _Describe trends, key metrics, and patterns._  
+- Date/timestamp columns → partition by day
+- Integer date key columns (like `20240315`) → range partition
+
+Each table is also **clustered** to make queries faster (e.g. `fact_orders` clusters on `customer_id` and `channel` so filtering by customer or channel is cheap).
+
+All tables use `WRITE_TRUNCATE` — the pipeline does a full reload each run.
+
+### Step 4: SQL Update — Customer Segments (RFM)
+
+After all tables are loaded, the pipeline runs a BigQuery `MERGE` statement that:
+
+1. Pulls order history from `fact_orders` (paid + completed orders only) and calculates each customer's total spend, order count, first order date, and last order date
+2. Scores each customer on **Recency, Frequency, and Monetary** value using `NTILE(5)` — giving each axis a score from 1 to 5
+3. Combines the three scores into a 3-digit cell (e.g. `555`, `312`) and maps it to a segment name: `Champions`, `Loyal`, `Growing / Potential`, `Needs Attention`, `At Risk`, `Lost / Inactive`, and others
+4. Customers with no purchase history are labelled `No Purchase` — their `total_orders = 0` and `first/last_order_date` remain `null`
+5. Updates `dim_customer` in place — existing rows are overwritten with the new values (no history kept)
+
+### Step 5: Orchestration & Error Handling
+
+`PipelineOrchestrator` runs everything in the right order:
+
+```
+check_dataset → process_dimensions() → process_facts() → execute_sql_query()
+```
+
+Each table has its own `try/except` block — if one source fails (e.g. a bad PayPal file), the rest of the pipeline keeps running. Every step is logged to both the console and a log file via `setup_logger()`.
 
 ---
 
-## 🔎 Final Conclusion & Recommendations  
+## 🗄️ Data Model (Star Schema)
 
-👉🏻 Based on the insights and findings above, we would recommend the [stakeholder team] to consider the following:  
+![Star Schema Data Model](documents/images/Star_Schema_Data_Model.png)
 
-📍 Key Takeaways:  
-✔️ Recommendation 1  
-✔️ Recommendation 2  
-✔️ Recommendation 3
+*Figure 2: Star Schema — 3 Dimension Tables + 5 Fact Tables in Google BigQuery*
 
-**_📌Remember to summarize the most core insights/ observations you extract from the entire projects. 
- Recap ONLY key actions/ recommendations. DO NOT copy paste everything above_**
+Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
+
+> For full column-level detail, see the 📄 [Data Dictionary](documents/data_dictionary.md).
+
+### Dimension Tables
+
+| Table | Source | Partition | Key Column | What It Contains |
+|---|---|---|---|---|
+| `dim_customer` | Shopify | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, first/last order date. Updated automatically after each pipeline run. |
+| `dim_product` | Shopify | — | `product_id` | Product name, SKU, category, brand, price in VND and USD, stock quantity, active flag. |
+| `dim_location` | Sapo POS | — | `location_id` | Store name, code, city, address, phone. `location_type` = `Offline Store`. |
+| `dim_date` | — | — | `date_key` | Date attributes: year, quarter, month, week, day name, weekend flag, holiday flag, fiscal period. **Designed but not yet activated** — `transform_dim_date()` is commented out pending a holiday data source. |
+
+> `dim_staff` was part of the original scope but **not built** — Sapo POS raw data does not include staff information.
+
+### Fact Tables
+
+| Table | Sources | Partition | Cluster | Primary Key | What It Records |
+|---|---|---|---|---|---|
+| `fact_orders` | Shopify · Online Orders · Sapo POS | `order_date_key` | `customer_id`, `channel` | `order_key` | Every order across all channels. Surrogate key = `channel + order_id + transaction_id`. |
+| `fact_order_items` | Shopify · Online Orders · Sapo POS | `order_date_key` | `product_id` | `order_item_key` | Each product line inside an order, exploded from `line_items` arrays. |
+| `fact_payments` | ZaloPay · MoMo · PayPal | `payment_date_key` | `customer_id`, `payment_gateway` | `payment_key` | Payment transactions from e-wallet gateways. PayPal excluded in current run due to low data volume. |
+| `fact_cart_events` | Cart Tracking | `event_date_key` | `customer_id`, `session_id`, `event_type` | `event_key` | User actions on site: view, add to cart, purchase, etc. Guests use `customer_id = -1`. |
+| `fact_bank_transactions` | Mercury Bank | `transaction_date_key` | — | `transaction_key` | Bank-level inflows and outflows. Negative amounts = outflows and are valid. |
+
+### Analytical Views
+
+Three views sit on top of the fact tables and are ready to query directly from Power BI:
+
+| View | Built From | What It Answers |
+|---|---|---|
+| `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase? Shows full event sequence, session info, and `hours_to_first_purchase`. |
+| `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day? Reconciles sales revenue, payments received, and bank transactions into one daily row with `net_cashflow_vnd`. |
+| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as Paid / Pending / Overdue / Partially Paid / Cancelled / Unknown, with `payment_delay_hours` and `outstanding_amount_vnd`. |
+
+---
+
+## 📊 Results — BigQuery Output
+
+The screenshots below show real query results from BigQuery after the pipeline has run.
+
+### dim_customer — RFM Segments Auto-Updated
+
+![dim_customer](documents/images/dim_customer.png)
+
+`dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment.
+
+### vw_cashflow_daily — Daily Revenue and Cashflow
+
+![vw_cashflow_daily](documents/images/vw_cashflow_daily.png)
+
+`vw_cashflow_daily` brings together sales, payments, and bank records into one row per day. Finance can check whether revenue was actually collected without joining tables manually.
+
+### vw_customer_journey — Touchpoint Sequence Per Customer
+
+![vw_customer_journey](documents/images/vw_customer_journey.png)
+
+`vw_customer_journey` shows each customer's path from first site interaction to purchase — including the full event sequence (e.g. `view_item > add_to_cart > purchase`) and how many hours it took.
+
+### vw_payment_status — Payment Health Per Order
+
+![vw_payment_status](documents/images/vw_payment_status.png)
+
+`vw_payment_status` joins orders and payments to classify every order's payment health and flag overdue or partially paid orders.
+
+---
+
+## 📈 Power BI Demo
+
+The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_payment_status`) are connected to Power BI via the native BigQuery connector.
+
+### Data Model View in Power BI
+
+![Power BI Model View](documents/images/PBI_model_view.png)
+
+*Figure 3: The three views loaded into Power BI's model view, showing relationships between tables.*
+
+### Sample Dashboard (Demo)
+
+![Power BI Dashboard Demo](documents/images/PBI_dashboard_demo.png)
+
+*Figure 4: A quick demo dashboard pulling from the three views — charts and cards to verify that data flows through correctly from BigQuery to Power BI. This is not a full analytical dashboard; it is a functional check to confirm the data pipeline end-to-end.*
+
+---
+
+## 🗂️ Project Structure
+
+```
+end_to_end_project/
+├── config/
+│   └── config.txt                    # Configuration template
+├── documents/
+│   ├── data_dictionary.md            # Full column-level documentation
+│   └── images/                       # Architecture diagrams and screenshots
+├── extractors/
+│   ├── __init__.py
+│   ├── base_extractor.py             # Shared GCS logic: connect, list files, unzip
+│   ├── online_extractor.py           # Online orders (multi-channel)
+│   ├── payment_extractor.py          # Mercury, MoMo, PayPal, ZaloPay
+│   ├── sapo_extractor.py             # Sapo POS offline orders
+│   ├── shopify_extractor.py          # Shopify online store
+│   └── tracking_extractor.py         # Cart tracking events
+├── loaders/
+│   ├── __init__.py
+│   └── bigquery_loader.py            # Writes to BigQuery with partitioning and clustering
+├── orchestration/
+│   ├── __init__.py
+│   └── pipeline_orchestrator.py      # Runs the full pipeline in order
+├── transformers/
+│   ├── __init__.py
+│   ├── base_transformer.py           # Shared cleaning, key generation, quality checks
+│   ├── dimension_transformer.py      # Builds dim_customer, dim_product, dim_location
+│   └── fact_transformer.py           # Builds all five fact tables
+├── utils/
+│   ├── __init__.py
+│   ├── config.py                     # Loads environment variables and credential paths
+│   └── logger.py                     # Logs to both console and file
+├── tests/
+│   ├── check_data.py
+│   ├── test_extract.py
+│   ├── test_load.py
+│   └── test_transform.py
+├── logs/                             # Pipeline run logs (auto-created)
+├── .env.example                      # Example environment config
+├── main.py                           # Entry point — run this to start the pipeline
+└── requirement.txt                   # Python dependencies
+```
+
+---
+
+## 🔎 Conclusion & Business Impact
+
+📍 **Key Outcomes:**
+
+✔️ **One place for all data** — sales from Shopify, Sapo POS, and online channels; payments from MoMo, ZaloPay, PayPal, and Mercury; and user behaviour from cart tracking — all cleaned and in one BigQuery dataset.
+
+✔️ **Faster reporting** — the analytics team gets clean, structured tables they can query directly. No more manual exports or fixing mismatched formats before each report.
+
+✔️ **Daily cashflow visibility** — Finance can check whether money was actually received each day with a single query against `vw_cashflow_daily`.
+
+✔️ **Always up-to-date customer segments** — Marketing gets fresh RFM segments (Champions, Loyals, At-Risk, etc.) automatically after every pipeline run, without a separate tool or manual step.
+
+✔️ **Easy to extend** — adding a new data source only means writing a new extractor class. Everything else (cleaning logic, loader, orchestrator) stays the same.
+
+---
+
+## ⚙️ Setup Instructions
+
+### What You Need
+
+- Python 3.8 or higher
+- A Google Cloud account with BigQuery and Cloud Storage enabled
+- A service account with **BigQuery Admin** and **Storage Object Viewer** permissions
+
+### Steps
+
+**1. Clone the repo**
+```bash
+git clone https://github.com/your-username/building-omnichannel-retail-pipeline
+cd end_to_end_project
+```
+
+**2. Create a virtual environment**
+```bash
+python -m venv .venv
+
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows
+.venv\Scripts\activate
+```
+
+**3. Install dependencies**
+```bash
+pip install -r requirement.txt
+```
+
+**4. Set up credentials**
+
+Copy the example env file and fill in your GCP credential file paths:
+```bash
+cp .env.example .env
+```
+
+```env
+GOOGLE_APPLICATION_CREDENTIALS=path/to/gcs_service_account.json
+GOOGLE_APPLICATION_CREDENTIALS_BIGQUERY=path/to/bigquery_service_account.json
+```
+
+> GCP credentials are not included in this repo for security reasons.
+
+**5. Set your bucket and dataset**
+
+In `main.py`, update these two lines:
+```python
+BUCKET_NAME = 'your-gcs-bucket-name'
+DATASET_ID = 'techstore_analytics'
+```
+
+**6. Run the pipeline**
+```bash
+python main.py
+```
+
+The pipeline will log every step to the console and to `logs/pipeline.log`. When it finishes, all tables and views will be available in BigQuery under the dataset you configured.

@@ -375,7 +375,7 @@ Bach Minh Nam - ETL Pipeline/
 
 **1. Clone the repo**
 ```bash
-https://github.com/TascoGitGud/TechStore-Vietnam-End-to-End-Analytics-Pipeline.git
+https://github.com/TascoGitGud/Building-an-End-to-end-Retail-Data-Pipeline-for-Techstore-Vietnam.git
 ```
 **2. Install dependencies**
 ```bash

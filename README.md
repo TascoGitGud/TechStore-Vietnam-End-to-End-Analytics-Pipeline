@@ -1,8 +1,6 @@
 # 🏗️ Building an Omnichannel Retail Data Pipeline
 ### End-to-End ETL Pipeline | Python · Google Cloud Storage · BigQuery | Star Schema Data Warehouse
 
-> **Note:** This repository is for **technical readers** - data engineers, analytics engineers, and technical leads.
-
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Google BigQuery](https://img.shields.io/badge/Google_BigQuery-4285F4?style=flat-square&logo=googlebigquery&logoColor=white)
 ![Google Cloud Storage](https://img.shields.io/badge/Google_Cloud_Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white)

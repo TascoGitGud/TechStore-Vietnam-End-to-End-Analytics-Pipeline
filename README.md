@@ -256,7 +256,7 @@ The screenshots below show real query results from BigQuery after the pipeline h
 
 ### dim_customer - RFM Segments Auto-Updated
 
-![Dim_customer](Images/dim_customer.png)
+![dim_customer](Images/Dim_customer.png)
 
 `dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment - including `No Purchase` for customers with no order history (`total_orders = 0` and `first_order_date` / `last_order_date` left as `null`).
 

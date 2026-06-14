@@ -212,7 +212,7 @@ Each table has its own `try/except` block - if one source fails (e.g. a bad PayP
 
 ![Star Schema Data Model](Images/Star_Schema_Data_Model.png)
 
-*Figure 2: Star Schema - 4 Active Dimension Tables + 5 Fact Tables in Google BigQuery 
+*Figure 2: Star Schema - 4 Active Dimension Tables + 5 Fact Tables in Google BigQuery*
 
 Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
 

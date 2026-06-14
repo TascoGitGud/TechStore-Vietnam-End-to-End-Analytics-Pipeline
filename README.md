@@ -135,7 +135,7 @@ Each source has its own data format. Below are three examples:
 | Step | What Happens |
 |---|---|
 | **1. Extract** | The pipeline connects to GCS using a Storage service account and reads all `.json.gz` files. |
-| **2. Transform** | Data is cleaned and reshaped in memory using Python and Pandas - no intermediate database needed. |
+| **2. Transform** | Data is cleaned and reshaped in memory using Python and Pandas. |
 | **3. Load** | Cleaned tables are written to BigQuery using a separate BigQuery service account. |
 | **4. Visualise** | Power BI connects directly to BigQuery to display dashboards. |
 
@@ -192,7 +192,7 @@ After all tables are loaded, the pipeline runs a BigQuery `MERGE` statement that
 
 1. Pulls order history from `fact_orders` (paid + completed orders only) and calculates each customer's total spend, order count, first order date, and last order date
 2. Scores each customer on **Recency, Frequency, and Monetary** value using `NTILE(5)` - giving each axis a score from 1 to 5
-3. Combines the three scores into a 3-digit cell (e.g. `555`, `312`) and maps it to a segment name: At Risk, Growing / Potential, Lost / Inactive, Needs Attention, No Purchase, and others
+3. Combines the three scores into a 3-digit cell (e.g. `555`, `312`) and maps it to a segment name: *At Risk, Growing / Potential, Lost / Inactive, Needs Attention, No Purchase, and others*.
 4. Customers with no purchase history are labelled `No Purchase` - their `total_orders = 0` and `first/last_order_date` remain `null`
 5. Updates `dim_customer` in place - existing rows are overwritten with the new values 
 
@@ -212,7 +212,7 @@ Each table has its own `try/except` block - if one source fails (e.g. a bad PayP
 
 ![Star Schema Data Model](Images/Star_Schema_Data_Model.png)
 
-*Figure 2: Star Schema - 4 Active Dimension Tables + 5 Fact Tables in Google BigQuery*
+*Figure 2: Star Schema*
 
 Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
 

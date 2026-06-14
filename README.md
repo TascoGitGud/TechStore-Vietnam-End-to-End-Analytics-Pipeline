@@ -8,7 +8,7 @@
 ![Google Cloud Storage](https://img.shields.io/badge/Google_Cloud_Storage-4285F4?style=flat-square&logo=googlecloud&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white)
 
-![Banner](documents/Images/Banner.jpg)
+![Banner](Images/Banner.jpg)
 
 ---
 
@@ -121,7 +121,7 @@ Each source has its own data format. Below are three examples:
 }
 ```
 
-> For full column details on all tables, see the 📄 [Data Dictionary](documents/data_dictionary.md).
+> For full column details on all tables, see the 📄 [Data Dictionary](data_dictionary.md).
 
 ---
 
@@ -129,7 +129,7 @@ Each source has its own data format. Below are three examples:
 
 ### Pipeline Architecture
 
-![Architecture](documents/Images/Architecture.png)
+![Architecture](Images/Architecture.png)
 
 *Figure 1: End-to-End Pipeline - GCS → ETL Engine → BigQuery → Power BI*
 
@@ -219,13 +219,13 @@ Each table has its own `try/except` block - if one source fails (e.g. a bad PayP
 
 ## 🗄️ Data Model (Star Schema)
 
-![Star Schema Data Model](documents/Images/Star_Schema_Data_Model.png)
+![Star Schema Data Model](Images/Star_Schema_Data_Model.png)
 
 *Figure 2: Star Schema - 3 Dimension Tables + 5 Fact Tables in Google BigQuery*
 
 Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
 
-> For full column-level detail, see the 📄 [Data Dictionary](documents/data_dictionary.md).
+> For full column-level detail, see the 📄 [Data Dictionary](data_dictionary.md).
 
 ### Dimension Tables
 
@@ -266,25 +266,25 @@ The screenshots below show real query results from BigQuery after the pipeline h
 
 ### dim_customer - RFM Segments Auto-Updated
 
-![dim_customer](documents/Images/dim_customer.png)
+![dim_customer](Images/dim_customer.png)
 
 `dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment.
 
 ### vw_cashflow_daily - Daily Revenue and Cashflow
 
-![vw_cashflow_daily](documents/Images/vw_cashflow_daily.png)
+![vw_cashflow_daily](Images/vw_cashflow_daily.png)
 
 `vw_cashflow_daily` brings together sales, payments, and bank records into one row per day. Finance can check whether revenue was actually collected without joining tables manually.
 
 ### vw_customer_journey - Touchpoint Sequence Per Customer
 
-![vw_customer_journey](documents/Images/vw_customer_journey.png)
+![vw_customer_journey](Images/vw_customer_journey.png)
 
 `vw_customer_journey` shows each customer's path from first site interaction to purchase - including the full event sequence (e.g. `view_item > add_to_cart > purchase`) and how many hours it took.
 
 ### vw_payment_status - Payment Health Per Order
 
-![vw_payment_status](documents/Images/vw_payment_status.png)
+![vw_payment_status](Images/vw_payment_status.png)
 
 `vw_payment_status` joins orders and payments to classify every order's payment health and flag overdue or partially paid orders.
 
@@ -296,13 +296,13 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 
 ### Data Model View in Power BI
 
-![Power BI Model View](documents/Images/PBI_model_view.png)
+![Power BI Model View](Images/PBI_model_view.png)
 
 *Figure 3: The three views loaded into Power BI's model view, showing relationships between tables.*
 
 ### Sample Dashboard (Demo)
 
-![Power BI Dashboard Demo](documents/Images/PBI_dashboard_demo.png)
+![Power BI Dashboard Demo](Images/PBI_dashboard_demo.png)
 
 *Figure 4: A quick demo dashboard pulling from the three views - charts and cards to verify that data flows through correctly from BigQuery to Power BI. This is not a full analytical dashboard; it is a functional check to confirm the data pipeline end-to-end.*
 
@@ -314,7 +314,7 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 end_to_end_project/
 ├── config/
 │   └── config.txt                    # Configuration template
-├── documents/
+├── 
 │   ├── data_dictionary.md            # Full column-level documentation
 │   └── Images/                       # Architecture diagrams and screenshots
 ├── extractors/

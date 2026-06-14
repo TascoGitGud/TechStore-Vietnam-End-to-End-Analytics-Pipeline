@@ -1,2 +1,0 @@
-Please drop your Google Cloud Service Account JSON key file into this folder 
-and update the path inside the .env file before running main.py.

@@ -17,13 +17,13 @@
 1. [📌 Background & Overview](#-background--overview)
 2. [📂 Data Sources](#-data-sources)
 3. [🏛 Architecture & Design](#-architecture--design)
-4. [⚒️ Main Process](#-main-process)
-5. [🗄️ Data Model (Star Schema)](#-data-model-star-schema)
+4. [⚒ Main Process](#-main-process)
+5. [🗄 Data Model (Star Schema)](#-data-model-star-schema)
 6. [📊 Results - BigQuery Output](#-results--bigquery-output)
 7. [📈 Power BI Demo](#-power-bi-demo)
-8. [🗂️ Project Structure](#-project-structure)
+8. [🗂 Project Structure](#-project-structure)
 9. [🔎 Conclusion & Business Impact](#-conclusion--business-impact)
-10. [⚙️ Setup Instructions](#-setup-instructions)
+10. [⚙ Setup Instructions](#-setup-instructions)
 
 ---
 
@@ -142,7 +142,7 @@ Each source has its own data format. Below are three examples:
 
 ---
 
-## ⚒️ Main Process
+## ⚒ Main Process
 
 ### Step 1: Extract - Reading files from GCS
 
@@ -209,7 +209,7 @@ Each table has its own `try/except` block - if one source fails (e.g. a bad PayP
 
 ---
 
-## 🗄️ Data Model (Star Schema)
+## 🗄 Data Model (Star Schema)
 
 ![Star Schema Data Model](Images/Star_Schema_Data_Model.png)
 
@@ -302,7 +302,7 @@ The three analytical views (`vw_customer_journey`, `vw_cashflow_daily`, `vw_paym
 
 ---
 
-## 🗂️ Project Structure
+## 🗂 Project Structure
 
 ```
 Bach Minh Nam - ETL Pipeline/
@@ -363,7 +363,7 @@ Bach Minh Nam - ETL Pipeline/
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙ Setup Instructions
 
 ### What You Need
 

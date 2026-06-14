@@ -372,27 +372,14 @@ end_to_end_project/
 
 **1. Clone the repo**
 ```bash
-git clone https://github.com/your-username/building-omnichannel-retail-pipeline
-cd end_to_end_project
+https://github.com/TascoGitGud/TechStore-Vietnam-End-to-End-Analytics-Pipeline.git
 ```
-
-**2. Create a virtual environment**
-```bash
-python -m venv .venv
-
-# macOS / Linux
-source .venv/bin/activate
-
-# Windows
-.venv\Scripts\activate
-```
-
-**3. Install dependencies**
+**2. Install dependencies**
 ```bash
 pip install -r requirement.txt
 ```
 
-**4. Set up credentials**
+**3. Set up credentials**
 
 Copy the example env file and fill in your GCP credential file paths:
 ```bash
@@ -406,7 +393,7 @@ GOOGLE_APPLICATION_CREDENTIALS_BIGQUERY=path/to/bigquery_service_account.json
 
 > GCP credentials are not included in this repo for security reasons.
 
-**5. Set your bucket and dataset**
+**4. Set your bucket and dataset**
 
 In `main.py`, update these two lines:
 ```python

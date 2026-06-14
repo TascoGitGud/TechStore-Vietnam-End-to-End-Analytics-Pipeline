@@ -138,14 +138,6 @@ Each source has its own data format. Below are three examples:
 | **3. Load** | Cleaned tables are written to BigQuery using a separate BigQuery service account. |
 | **4. Visualise** | Power BI connects directly to BigQuery to display dashboards. |
 
-### Data Layers (Bronze → Silver → Gold)
-
-| Layer | Where | What |
-|---|---|---|
-| **Bronze** | GCS Buckets | Raw files exactly as received from each source. Nothing is changed. |
-| **Silver** | In-memory (Pandas) | Columns renamed, data types fixed, keys generated, missing values filled. Quality checks run here before loading. |
-| **Gold** | Google BigQuery | Clean dimension and fact tables, plus SQL updates for customer segments and derived metrics. |
-
 ---
 
 ## ⚒️ Main Process

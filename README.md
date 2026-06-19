@@ -228,10 +228,10 @@ Dimension tables describe the "who", "what", "where", and "when". Fact tables re
 
 | Table | Source | Partition | Key Column | What It Contains |
 |---|---|---|---|---|
-| `dim_customer` | Shopify | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, first/last order date. Updated automatically after each pipeline run. |
-| `dim_product` | Shopify | - | `product_id` | Product name, SKU, category, brand, price in VND and USD, stock quantity, active flag. |
+| `dim_customer` | Shopify | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, etc... Updated automatically after each pipeline run. |
+| `dim_product` | Shopify | - | `product_id` | Product name, SKU, category, etc.. |
 | `dim_location` | Sapo POS | - | `location_id` | Store name, code, city, address, phone. `location_type` = `Offline Store`. |
-| `dim_date` | - | - | `date_key` | Date attributes: year, quarter, month, week, day name, weekend flag, holiday flag, fiscal period. |
+| `dim_date` | - | - | `date_key` | Date attributes: year, quarter, month, etc.. |
 
 > `dim_staff` was part of the original scope but **not built** - Sapo POS raw data does not include staff information.
 
@@ -239,11 +239,11 @@ Dimension tables describe the "who", "what", "where", and "when". Fact tables re
 
 | Table | Sources | Partition | Cluster | Primary Key | What It Records |
 |---|---|---|---|---|---|
-| `fact_orders` | Shopify · Online Orders · Sapo POS | `order_date_key` | `customer_id`, `channel` | `order_key` | Every order across all channels. Surrogate key = `channel + order_id + transaction_id`. |
-| `fact_order_items` | Shopify · Online Orders · Sapo POS | `order_date_key` | `product_id` | `order_item_key` | Each product line inside an order, exploded from `line_items` arrays. |
-| `fact_payments` | ZaloPay · MoMo · PayPal | `payment_date_key` | `customer_id`, `payment_gateway` | `payment_key` | Payment transactions from e-wallet gateways. PayPal excluded in current run due to low data volume. |
-| `fact_cart_events` | Cart Tracking | `event_date_key` | `customer_id`, `session_id`, `event_type` | `event_key` | User actions on site: view, add to cart, purchase, etc. Guests use `customer_id = -1`. |
-| `fact_bank_transactions` | Mercury Bank | `transaction_date_key` | - | `transaction_key` | Bank-level inflows and outflows. Negative amounts = outflows and are valid. |
+| `fact_orders` | Shopify · Online Orders · Sapo POS | `order_date_key` | `customer_id`, `channel` | `order_key` | Every order across all channels. |
+| `fact_order_items` | Shopify · Online Orders · Sapo POS | `order_date_key` | `product_id` | `order_item_key` | Each product line inside an order. |
+| `fact_payments` | ZaloPay · MoMo · PayPal | `payment_date_key` | `customer_id`, `payment_gateway` | `payment_key` | Payment transactions from e-wallet gateways (PayPal excluded in current run due to low data volume.) |
+| `fact_cart_events` | Cart Tracking | `event_date_key` | `customer_id`, `session_id`, `event_type` | `event_key` | User actions on site: view, add to cart, purchase, etc. |
+| `fact_bank_transactions` | Mercury Bank | `transaction_date_key` | - | `transaction_key` | Bank-level inflows and outflows. |
 
 ### Analytical Views
 
@@ -253,7 +253,7 @@ Three views sit on top of the fact tables and are ready to query directly from P
 |---|---|---|
 | `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase? Shows full event sequence, session info, and `hours_to_first_purchase`. |
 | `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day? Reconciles sales revenue, payments received, and bank transactions into one daily row with `net_cashflow_vnd`. |
-| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as Paid / Pending  / Partially Paid / Refunded/etc.. , with `payment_delay_hours` and `outstanding_amount_vnd`. |
+| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as Paid / Pending / etc.. |
 
 ---
 

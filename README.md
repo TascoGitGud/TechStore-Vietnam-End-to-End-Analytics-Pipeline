@@ -249,7 +249,7 @@ Three views sit on top of the fact tables and are ready to query directly from P
 
 | View | Built From | What It Answers |
 |---|---|---|
-| `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase? Shows full event sequence, session info, and `hours_to_first_purchase`. |
+| `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase?. |
 | `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day?. |
 | `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid?. |
 

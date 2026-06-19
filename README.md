@@ -222,8 +222,6 @@ Each table has its own `try/except` block - if one source fails, the rest of the
 
 Dimension tables describe the "who", "what", "where", and "when". Fact tables record what actually happened (orders, payments, events) and link back to dimensions via foreign keys.
 
-> For full column-level detail, see the 📄 [Data Dictionary](data_dictionary.md).
-
 ### Dimension Tables
 
 | Table | Source | Partition | Key Column | What It Contains |

@@ -24,7 +24,7 @@ _End-to-end Python ETL pipeline that ingests, cleans, and standardizes multi-cha
 3. [🏛 Architecture & Design](#-architecture--design)
 4. [⚒ Main Process](#-main-process)
 5. [🗄 Data Model (Star Schema)](#-data-model-star-schema)
-6. [📊 Results: BigQuery Output](#-results-bigquery-output)
+6. [📊 BigQuery Output](#-bigquery-output)
 7. [📈 Power BI Demo](#-power-bi-demo)
 8. [🗂 Project Structure](#-project-structure)
 9. [🔎 Conclusion & Business Impact](#-conclusion--business-impact)
@@ -257,7 +257,7 @@ Three views sit on top of the fact tables and are ready to query directly from P
 
 ---
 
-## 📊 Results: BigQuery Output
+## 📊 BigQuery Output
 
 The screenshots below show real query results from BigQuery after the pipeline has run.
 

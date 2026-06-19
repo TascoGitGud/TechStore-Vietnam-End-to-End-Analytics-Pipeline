@@ -126,7 +126,7 @@ Each source has its own data format. Below are three examples:
 }
 ```
 
-> For full column details on all raw data, see the 📄 [Raw Data Dictionary](data_dictionary.md)
+> For full column details on all raw data, see the 📄 [Raw Data Dictionary](raw_data_dictionary.md)
 
 ---
 

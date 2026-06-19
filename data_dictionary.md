@@ -237,4 +237,4 @@ Partition: `transaction_date_key`
 | `last_payment_gateway` | STRING | Most recent payment gateway |
 | `last_payment_method` | STRING | Most recent payment method |
 | `payment_delay_hours` | INT64 | Hours from order placement to successful payment |
-| `payment_status_category` | STRING | `Paid`, `Pending`, `Overdue`, `Partially Paid`, `Cancelled`, `Unknown` |
+| `payment_status_category` | STRING | Payment status |

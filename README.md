@@ -178,7 +178,7 @@ All common transformation logic lives in `BaseTransformer`, which both `DimTrans
 - `fact_orders` - combines orders from Shopify, Online Orders, and Sapo POS. Each source is cleaned separately, then all three are stacked together using `pd.concat`
 - `fact_order_items` - explodes the `line_items` array inside each order into individual product rows, then stacks all channels together
 - `fact_payments` - standardises payment records from ZaloPay, MoMo, and PayPal. Each gateway uses a different success code - `return_code == 1` for ZaloPay, `resultCode == 0` for MoMo - both are mapped to `SUCCESS`/`FAILED`. **PayPal data was excluded from the final load due to very low data volume**, but the transformer is kept for future use.
-- `fact_cart_events` - maps raw user behaviour events (add to cart, view item, etc.) with UTM tracking fields
+- `fact_cart_events` - maps raw user behaviour events (*add to cart, view item, etc.*) with UTM tracking fields
 - `fact_bank_transactions` - processes Mercury Bank records; negative amounts (outflows) are allowed and noted
 
 ### Step 3: Load - Writing to BigQuery

@@ -70,14 +70,14 @@ All raw data is stored in **Google Cloud Storage (GCS)** as `.json.gz` files, on
 
 | Source | Folder | Data Volume | Format |
 |---|---|---|---|
-| Shopify (Online Store) | `shopify/` | 2M customers · 200K orders · 1K products | `.json.gz` |
-| Sapo POS (Offline Stores) | `sapo/` | 1M orders · 50 store locations | `.json.gz` |
-| Online Orders (Multi-channel) | `online_orders/` | 50K orders | `.json.gz` |
-| PayPal | `paypal/` | 300 transactions | `.json.gz` |
-| MoMo | `momo/` | 500 transactions | `.json.gz` |
-| ZaloPay | `zalopay/` | 500 transactions | `.json.gz` |
-| Mercury Bank | `mercury/` | 3 accounts · 500 transactions | `.json.gz` |
-| Cart Tracking | `cart_tracking/` | 10,000+ events | `.json.gz` |
+| `Shopify` (Online Store) | `shopify/` | 2M customers · 200K orders · 1K products | `.json.gz` |
+| `Sapo POS` (Offline Stores) | `sapo/` | 1M orders · 50 store locations | `.json.gz` |
+| `Online Orders` (Multi-channel) | `online_orders/` | 50K orders | `.json.gz` |
+| `PayPal` | `paypal/` | 300 transactions | `.json.gz` |
+| `MoMo` | `momo/` | 500 transactions | `.json.gz` |
+| `ZaloPay` | `zalopay/` | 500 transactions | `.json.gz` |
+| `Mercury Bank` | `mercury/` | 3 accounts · 500 transactions | `.json.gz` |
+| `Cart Tracking` | `cart_tracking/` | 10,000+ events | `.json.gz` |
 
 ### Sample Raw Data Schemas
 
@@ -226,9 +226,9 @@ Dimension tables describe the "who", "what", "where", and "when". Fact tables re
 
 | Table | Source | Partition | Key Column | What It Contains |
 |---|---|---|---|---|
-| `dim_customer` | Shopify | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, etc.. Updated automatically after each pipeline run. |
-| `dim_product` | Shopify | - | `product_id` | Product name, SKU, category, etc. |
-| `dim_location` | Sapo POS | - | `location_id` | Store name, code, city, address, phone. `location_type` = `Offline Store`. |
+| `dim_customer` | `Shopify` | `created_at` | `customer_id` | Customer profile + RFM segment, lifetime value, etc.. Updated automatically after each pipeline run. |
+| `dim_product` | `Shopify` | - | `product_id` | Product name, SKU, category, etc. |
+| `dim_location` | `Sapo POS` | - | `location_id` | Store name, code, city, address, phone. `location_type` = `Offline Store`. |
 | `dim_date` | - | - | `date_key` | Date attributes: year, quarter, month, etc. |
 
 > `dim_staff` was part of the original scope but **not built** - Sapo POS raw data does not include staff information.
@@ -237,11 +237,11 @@ Dimension tables describe the "who", "what", "where", and "when". Fact tables re
 
 | Table | Sources | Partition | Cluster | Primary Key | What It Records |
 |---|---|---|---|---|---|
-| `fact_orders` | Shopify · Online Orders · Sapo POS | `order_date_key` | `customer_id`, `channel` | `order_key` | Every order across all channels. |
-| `fact_order_items` | Shopify · Online Orders · Sapo POS | `order_date_key` | `product_id` | `order_item_key` | Each product line inside an order. |
-| `fact_payments` | ZaloPay · MoMo · PayPal | `payment_date_key` | `customer_id`, `payment_gateway` | `payment_key` | Payment transactions from e-wallet gateways. |
-| `fact_cart_events` | Cart Tracking | `event_date_key` | `customer_id`, `session_id`, `event_type` | `event_key` | User actions on site. |
-| `fact_bank_transactions` | Mercury Bank | `transaction_date_key` | - | `transaction_key` | Bank-level inflows and outflows. |
+| `fact_orders` | `Shopify` · `Online Orders` · `Sapo POS` | `order_date_key` | `customer_id`, `channel` | `order_key` | Every order across all channels. |
+| `fact_order_items` | `Shopify` · `Online Orders` · `Sapo POS` | `order_date_key` | `product_id` | `order_item_key` | Each product line inside an order. |
+| `fact_payments` | `ZaloPay` · `MoMo` · `PayPal` | `payment_date_key` | `customer_id`, `payment_gateway` | `payment_key` | Payment transactions from e-wallet gateways. |
+| `fact_cart_events` | `Cart Tracking` | `event_date_key` | `customer_id`, `session_id`, `event_type` | `event_key` | User actions on site. |
+| `fact_bank_transactions` | `Mercury Bank` | `transaction_date_key` | - | `transaction_key` | Bank-level inflows and outflows. |
 
 ### Analytical Views
 
@@ -250,8 +250,8 @@ Three views sit on top of the fact tables and are ready to query directly from P
 | View | Built From | What It Answers |
 |---|---|---|
 | `vw_customer_journey` | `fact_cart_events` + `fact_orders` | How did each customer move from first interaction to purchase? Shows full event sequence, session info, and `hours_to_first_purchase`. |
-| `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day? Reconciles sales revenue, payments received, and bank transactions into one daily row with `net_cashflow_vnd`. |
-| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid? Classifies orders as *Paid / Pending / etc.* |
+| `vw_cashflow_daily` | `fact_orders` + `fact_payments` + `fact_bank_transactions` + `dim_date` | What came in and went out each day?. |
+| `vw_payment_status` | `fact_orders` + `fact_payments` | Is each order actually paid?. |
 
 > For full column details on all tables, see the 📄 [Data Dictionary](data_dictionary.md)
 
@@ -261,25 +261,25 @@ Three views sit on top of the fact tables and are ready to query directly from P
 
 The screenshots below show real query results from BigQuery after the pipeline has run.
 
-### dim_customer - RFM Segments Auto-Updated
+### `dim_customer` - RFM Segments Auto-Updated
 
 ![dim_customer](Images/Dim_customer.png)
 
 `dim_customer` is updated after every pipeline run via the BigQuery MERGE. The table shows each customer's recalculated `lifetime_value_vnd`, `total_orders`, `last_order_date`, and their current RFM segment - including `No Purchase` for customers with no order history (`total_orders = 0` and `first_order_date` / `last_order_date` left as `null`).
 
-### vw_cashflow_daily - Daily Revenue and Cashflow
+### `vw_cashflow_daily` - Daily Revenue and Cashflow
 
 ![vw_cashflow_daily](Images/vw_cashflow_daily.png)
 
 `vw_cashflow_daily` brings together sales, payments, and bank records into one row per day. Finance can check whether revenue was actually collected without joining tables manually.
 
-### vw_customer_journey - Touchpoint Sequence Per Customer
+### `vw_customer_journey` - Touchpoint Sequence Per Customer
 
 ![vw_customer_journey](Images/vw_customer_journey.png)
 
 `vw_customer_journey` shows each customer's path from first site interaction to purchase - including the full event sequence (e.g. `view_item > add_to_cart > purchase`) and how many hours it took.
 
-### vw_payment_status - Payment Health Per Order
+### `vw_payment_status` - Payment Health Per Order
 
 ![vw_payment_status](Images/vw_payment_status.png)
 

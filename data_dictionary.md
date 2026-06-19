@@ -1,4 +1,4 @@
-# 📖 Data Dictionary — TechStore Analytics
+# 📖 Data Dictionary - TechStore Analytics
 
 **Dataset:** `techstore_analytics`
 

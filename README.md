@@ -414,3 +414,7 @@ python main.py
 ```
 
 The pipeline will log every step to the console and to `logs/pipeline.log`. When it finishes, all tables and views will be available in BigQuery under the dataset you configured.
+
+
+---
+

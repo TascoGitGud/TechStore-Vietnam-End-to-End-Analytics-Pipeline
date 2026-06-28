@@ -7,8 +7,6 @@
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 
----
-
 ![Banner](Images/Banner.jpg)
 
 _End-to-end Python ETL pipeline that ingests, cleans, and standardizes multi-channel retail sales and payment gateway data into a partitioned BigQuery Star Schema for unified business intelligence._
